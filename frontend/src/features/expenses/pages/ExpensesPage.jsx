@@ -84,6 +84,13 @@ export default function ExpensesPage() {
             helper="Use a category and short description so reports stay readable later."
             onSubmit={handleSubmit}
             submitLabel="Save Expense"
+            footer={
+              expenseCategories.length === 0 ? (
+                <p className="text-sm text-amber-700">
+                  No expense categories available yet. Open the Categories page to add or review them.
+                </p>
+              ) : null
+            }
             fields={[
               {
                 name: 'category',

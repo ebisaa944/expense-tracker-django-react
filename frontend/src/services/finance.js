@@ -10,6 +10,8 @@ function resource(path) {
 
 export const categoriesService = {
   list: () => apiClient.get('categories/'),
+  create: (payload) => apiClient.post('categories/', payload),
+  remove: (id) => apiClient.delete(`categories/${id}/`),
 };
 
 export const expensesService = resource('expenses/');

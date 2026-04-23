@@ -85,6 +85,13 @@ export default function BudgetsPage() {
             helper="Use clear start and end dates so dashboard alerts stay accurate and timely."
             onSubmit={handleSubmit}
             submitLabel="Save Budget"
+            footer={
+              expenseCategories.length === 0 ? (
+                <p className="text-sm text-amber-700">
+                  Budgets need expense categories. Open the Categories page to add or review them.
+                </p>
+              ) : null
+            }
             fields={[
               {
                 name: 'category',

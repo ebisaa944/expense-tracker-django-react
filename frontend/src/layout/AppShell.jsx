@@ -5,6 +5,7 @@ import Button from '../components/ui/Button';
 
 const navigation = [
   { label: 'Dashboard', to: '/' },
+  { label: 'Categories', to: '/categories' },
   { label: 'Expenses', to: '/expenses' },
   { label: 'Incomes', to: '/incomes' },
   { label: 'Budgets', to: '/budgets' },

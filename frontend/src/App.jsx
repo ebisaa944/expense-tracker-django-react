@@ -6,6 +6,7 @@ import ExpensesPage from './features/expenses/pages/ExpensesPage';
 import IncomesPage from './features/incomes/pages/IncomesPage';
 import BudgetsPage from './features/budgets/pages/BudgetsPage';
 import GoalsPage from './features/goals/pages/GoalsPage';
+import CategoriesPage from './features/categories/pages/CategoriesPage';
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<DashboardPage />} />
+        <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/incomes" element={<IncomesPage />} />
         <Route path="/budgets" element={<BudgetsPage />} />

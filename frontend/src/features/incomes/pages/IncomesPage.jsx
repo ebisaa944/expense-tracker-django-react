@@ -84,6 +84,13 @@ export default function IncomesPage() {
             helper="Keep the source label short and recognizable so tables remain easy to scan."
             onSubmit={handleSubmit}
             submitLabel="Save Income"
+            footer={
+              incomeCategories.length === 0 ? (
+                <p className="text-sm text-amber-700">
+                  No income categories available yet. Open the Categories page to add or review them.
+                </p>
+              ) : null
+            }
             fields={[
               {
                 name: 'category',
