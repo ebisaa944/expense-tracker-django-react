@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from .models import Expense
+from common.serializers import UserOwnedModelSerializer
 
-class ExpenseSerializer(serializers.ModelSerializer):
+
+class ExpenseSerializer(UserOwnedModelSerializer):
     category_name = serializers.ReadOnlyField(source='category.name')
 
     class Meta:

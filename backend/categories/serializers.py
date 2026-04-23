@@ -1,7 +1,8 @@
-from rest_framework import serializers
 from .models import Category
+from common.serializers import UserOwnedModelSerializer
 
-class CategorySerializer(serializers.ModelSerializer):
+
+class CategorySerializer(UserOwnedModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'

@@ -1,8 +1,11 @@
 from rest_framework import serializers
 from .models import Budget
+from common.serializers import UserOwnedModelSerializer
 
-class BudgetSerializer(serializers.ModelSerializer):
+
+class BudgetSerializer(UserOwnedModelSerializer):
     category_name = serializers.ReadOnlyField(source='category.name')
+
     class Meta:
         model = Budget
         fields = '__all__'

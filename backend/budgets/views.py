@@ -1,13 +1,9 @@
-from rest_framework import viewsets, permissions
 from .models import Budget
 from .serializers import BudgetSerializer
+from common.viewsets import UserScopedModelViewSet
 
-class BudgetViewSet(viewsets.ModelViewSet):
+
+class BudgetViewSet(UserScopedModelViewSet):
+    queryset = Budget.objects.select_related('category')
     serializer_class = BudgetSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Budget.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    ordering = ('-start_date', '-id')

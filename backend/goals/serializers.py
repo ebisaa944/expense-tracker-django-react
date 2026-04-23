@@ -1,7 +1,8 @@
-from rest_framework import serializers
 from .models import Goal
+from common.serializers import UserOwnedModelSerializer
 
-class GoalSerializer(serializers.ModelSerializer):
+
+class GoalSerializer(UserOwnedModelSerializer):
     class Meta:
         model = Goal
         fields = '__all__'

@@ -1,8 +1,11 @@
 from rest_framework import serializers
 from .models import Income
+from common.serializers import UserOwnedModelSerializer
 
-class IncomeSerializer(serializers.ModelSerializer):
+
+class IncomeSerializer(UserOwnedModelSerializer):
     category_name = serializers.ReadOnlyField(source='category.name')
+
     class Meta:
         model = Income
         fields = '__all__'
