@@ -1,95 +1,138 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import AuthButton from '../../../components/auth/AuthButton';
+import AuthCard from '../../../components/auth/AuthCard';
+import AuthInput from '../../../components/auth/AuthInput';
+import GoogleAuthButton from '../../../components/auth/GoogleAuthButton';
 import Button from '../../../components/ui/Button';
-import Card from '../../../components/ui/Card';
 import { useAuth } from '../../../context/useAuth';
-
-const inputClassName =
-  'w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100';
+import { useNotifications } from '../../../context/useNotifications';
+import { getGoogleAuthConfig } from '../../../services/auth';
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { login, user } = useAuth();
+  const { notify } = useNotifications();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [googleEnabled, setGoogleEnabled] = useState(false);
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    remember_me: true,
+  });
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [navigate, user]);
+
+  useEffect(() => {
+    getGoogleAuthConfig()
+      .then((response) => setGoogleEnabled(Boolean(response.data.enabled)))
+      .catch(() => {});
+  }, []);
+
+  const handleChange = (event) => {
+    const { name, type, value, checked } = event.target;
+    setForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
+    setErrors((current) => ({ ...current, [name]: '' }));
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError('');
+    const validationErrors = {};
+    if (!form.email.trim()) validationErrors.email = 'Enter your email.';
+    if (!form.password) validationErrors.password = 'Enter your password.';
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) return;
 
+    setLoading(true);
     try {
-      await login({ username, password });
+      await login(form);
       navigate('/');
-    } catch {
-      setError('Invalid username or password.');
+    } catch (error) {
+      setErrors({
+        email: error.response?.data?.detail || error.response?.data?.non_field_errors?.[0] || 'Invalid email or password.',
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.32),_transparent_20%),radial-gradient(circle_at_bottom_right,_rgba(15,23,42,0.16),_transparent_26%),linear-gradient(160deg,_#fffdf8_0%,_#f8fafc_58%,_#e2e8f0_100%)] px-4 py-10">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(79,70,229,0.16),_transparent_22%),radial-gradient(circle_at_bottom_right,_rgba(5,150,105,0.12),_transparent_26%),linear-gradient(160deg,_#eef4fb_0%,_#f8fafc_58%,_#e2e8f0_100%)] px-4 py-10">
       <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-6xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="rounded-[36px] border border-white/70 bg-slate-950 p-8 text-white shadow-[0_40px_120px_-50px_rgba(15,23,42,0.8)] md:p-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-amber-300">Finance OS</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-indigo-200">Finance OS</p>
           <h1 className="mt-5 max-w-xl text-4xl font-semibold tracking-tight md:text-6xl">
-            Clean visibility for your money, goals, and day-to-day decisions.
+            Clean visibility for your money, goals, and daily decisions.
           </h1>
           <p className="mt-6 max-w-xl text-base leading-7 text-slate-300">
-            This workspace is now structured to feel more like a professional financial dashboard:
-            focused layouts, stronger hierarchy, and smoother backend integration.
+            Sign in to a secure personal finance workspace with user-specific settings, smart dashboard insights, and cleaner mobile-first workflows.
           </p>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {[
-              ['Cash flow', 'Track income and expenses with one consistent data flow.'],
-              ['Budget control', 'Spot overspending windows before they become bigger problems.'],
-              ['Savings goals', 'Keep important targets visible and measurable.'],
-            ].map(([title, text]) => (
-              <div key={title} className="rounded-[24px] border border-white/10 bg-white/5 p-4">
-                <p className="text-sm font-semibold text-white">{title}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-300">{text}</p>
-              </div>
-            ))}
-          </div>
         </div>
 
-        <Card className="mx-auto w-full max-w-md p-8 md:p-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.32em] text-amber-600">Welcome back</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">Sign in</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-500">
-            Use your account to continue managing your dashboard and records.
-          </p>
-
-          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-            {error && (
-              <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                {error}
-              </div>
-            )}
-            <label className="block">
-              <span className="mb-2 block text-sm font-medium text-slate-700">Username</span>
-              <input
-                className={inputClassName}
-                onChange={(event) => setUsername(event.target.value)}
-                required
-                type="text"
-                value={username}
-              />
-            </label>
-            <label className="block">
-              <span className="mb-2 block text-sm font-medium text-slate-700">Password</span>
-              <input
-                className={inputClassName}
-                onChange={(event) => setPassword(event.target.value)}
-                required
-                type="password"
-                value={password}
-              />
-            </label>
-            <Button type="submit" className="w-full">
-              Sign In
-            </Button>
+        <AuthCard
+          eyebrow="Welcome back"
+          title="Sign in"
+          description="Use your email and password to open your personalized financial dashboard."
+        >
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <AuthInput
+              label="Email"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              error={errors.email}
+              icon="search"
+            />
+            <AuthInput
+              label="Password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              value={form.password}
+              onChange={handleChange}
+              error={errors.password}
+              icon="settings"
+              rightAction={
+                <button type="button" className="text-xs font-semibold text-slate-500" onClick={() => setShowPassword((current) => !current)}>
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              }
+            />
+            <div className="flex items-center justify-between gap-4 text-sm">
+              <label className="flex items-center gap-2 text-slate-600">
+                <input type="checkbox" name="remember_me" checked={form.remember_me} onChange={handleChange} />
+                Remember me
+              </label>
+              <button type="button" className="font-medium text-indigo-600" onClick={() => notify({ tone: 'info', title: 'Forgot password', message: 'Password reset UI can be connected next without changing this screen.' })}>
+                Forgot password?
+              </button>
+            </div>
+            <AuthButton type="submit" loading={loading}>Sign in</AuthButton>
+            <GoogleAuthButton
+              disabled={!googleEnabled}
+              onClick={() => notify({
+                tone: googleEnabled ? 'success' : 'info',
+                title: googleEnabled ? 'Google login configured' : 'Google OAuth ready',
+                message: googleEnabled ? 'Connect your provider callback to complete the flow.' : 'Backend configuration endpoint is ready; provider credentials still need to be added.',
+              })}
+            />
           </form>
-        </Card>
+          <div className="mt-6 flex items-center justify-between gap-4 text-sm text-slate-500">
+            <span>No account yet?</span>
+            <Link to="/signup" className="font-semibold text-indigo-600">Create one</Link>
+          </div>
+          <div className="mt-4">
+            <Button tone="ghost" className="w-full" onClick={() => notify({ tone: 'info', title: 'Demo hint', message: 'Use a registered email and password to sign in with JWT.' })}>
+              Need help signing in?
+            </Button>
+          </div>
+        </AuthCard>
       </div>
     </div>
   );

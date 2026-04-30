@@ -11,6 +11,7 @@ import { categoriesService } from '../../../services/finance';
 export default function CategoriesPage() {
   const categories = useResource(categoriesService.list, []);
   const [deleteId, setDeleteId] = useState(null);
+  const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({
     name: '',
     type: 'expense',
@@ -24,11 +25,16 @@ export default function CategoriesPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    await categoriesService.create(form);
+    if (editingId) {
+      await categoriesService.update(editingId, form);
+    } else {
+      await categoriesService.create(form);
+    }
     setForm({
       name: '',
       type: 'expense',
     });
+    setEditingId(null);
     await categories.refresh(false);
   };
 
@@ -36,6 +42,22 @@ export default function CategoriesPage() {
     await categoriesService.remove(deleteId);
     setDeleteId(null);
     await categories.refresh(false);
+  };
+
+  const startEdit = (category) => {
+    setEditingId(category.id);
+    setForm({
+      name: category.name,
+      type: category.type,
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setForm({
+      name: '',
+      type: 'expense',
+    });
   };
 
   if (categories.loading) {
@@ -51,29 +73,34 @@ export default function CategoriesPage() {
         eyebrow="Categories"
         title="Manage the options used across your finance records"
         description="Expenses, incomes, and budgets rely on categories. You can now review, add, and remove them in one place."
+        tone="var(--page-categories)"
         highlights={[
           {
             label: 'Total categories',
             value: categories.data.length,
             helpText: 'All category options available to the current user.',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.96), rgba(241,245,249,0.88))',
           },
           {
             label: 'Expense types',
             value: expenseCount,
             helpText: 'Used by expenses and budgets.',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.96), rgba(254,226,226,0.78))',
           },
           {
             label: 'Income types',
             value: incomeCount,
             helpText: 'Used by income records.',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.96), rgba(220,252,231,0.78))',
           },
         ]}
         form={
           <ResourceFormCard
-            title="Add a category"
+            title={editingId ? 'Edit category' : 'Add a category'}
             helper="Create categories here when you want more specific options in forms."
             onSubmit={handleSubmit}
-            submitLabel="Save Category"
+            onCancel={editingId ? cancelEdit : undefined}
+            submitLabel={editingId ? 'Update Category' : 'Save Category'}
             fields={[
               {
                 name: 'name',
@@ -113,9 +140,14 @@ export default function CategoriesPage() {
               key: 'actions',
               label: 'Actions',
               render: (row) => (
-                <Button tone="secondary" onClick={() => setDeleteId(row.id)}>
-                  Delete
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button tone="secondary" onClick={() => startEdit(row)}>
+                    Edit
+                  </Button>
+                  <Button tone="secondary" onClick={() => setDeleteId(row.id)}>
+                    Delete
+                  </Button>
+                </div>
               ),
             },
           ]}

@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from accounts.views import UserSettingsView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('accounts.urls')),
+    path('api/settings/', UserSettingsView.as_view(), name='settings-root'),
     path('api/categories/', include('categories.urls')),
     path('api/expenses/', include('expenses.urls')),
     path('api/incomes/', include('incomes.urls')),

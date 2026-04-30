@@ -4,6 +4,10 @@ A full-stack personal finance tracker built with Django REST Framework and React
 
 The project includes JWT-based authentication, expense and income tracking, budgeting, savings goals, and a dashboard summary for day-to-day financial visibility.
 
+## Documentation
+
+- [Project SDLC and documentation](docs/PROJECT_SDLC.md)
+
 ## Stack
 
 - Backend: Django, Django REST Framework, Simple JWT, SQLite

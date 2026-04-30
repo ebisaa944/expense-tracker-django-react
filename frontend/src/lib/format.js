@@ -1,9 +1,29 @@
-export function formatCurrency(value) {
+export const currencyOptions = [
+  { code: 'ETB', label: 'Ethiopian Birr', symbol: 'Br' },
+  { code: 'USD', label: 'US Dollar', symbol: '$' },
+  { code: 'EUR', label: 'Euro', symbol: 'EUR' },
+  { code: 'GBP', label: 'British Pound', symbol: 'GBP' },
+];
+
+export function getPreferredCurrency() {
+  try {
+    const raw = localStorage.getItem('expense-tracker:settings');
+    if (!raw) {
+      return 'ETB';
+    }
+
+    return JSON.parse(raw).currency || 'ETB';
+  } catch {
+    return 'ETB';
+  }
+}
+
+export function formatCurrency(value, currency = getPreferredCurrency()) {
   const amount = Number(value || 0);
 
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency,
     maximumFractionDigits: 2,
   }).format(amount);
 }
@@ -26,4 +46,20 @@ export function clampPercentage(value) {
 
 export function getToday() {
   return new Date().toISOString().split('T')[0];
+}
+
+export function formatPercentage(value) {
+  return `${Number(value || 0).toFixed(0)}%`;
+}
+
+export function getRelativeBudgetTone(percent) {
+  if (percent >= 100) {
+    return 'danger';
+  }
+
+  if (percent >= 80) {
+    return 'warning';
+  }
+
+  return 'success';
 }
