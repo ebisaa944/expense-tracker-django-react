@@ -8,7 +8,7 @@ import { validateTransactionForm } from '../../lib/validation';
 import { useNotifications } from '../../context/useNotifications';
 
 const inputClassName =
-  'w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100';
+  'w-full rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-strong)] px-4 py-3 text-sm text-[var(--text-main)] outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100';
 
 function initialForm() {
   return {
@@ -91,7 +91,7 @@ export default function QuickEntryModal({ isOpen, onClose }) {
         </div>
 
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-slate-700">Category</span>
+          <span className="mb-2 block text-sm font-medium text-[var(--text-main)]">Category</span>
           <select className={inputClassName} name="category" value={form.category} onChange={handleChange}>
             <option value="">Select a category</option>
             {availableCategories.map((category) => (
@@ -104,13 +104,13 @@ export default function QuickEntryModal({ isOpen, onClose }) {
         </label>
 
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-slate-700">Amount</span>
+          <span className="mb-2 block text-sm font-medium text-[var(--text-main)]">Amount</span>
           <input className={inputClassName} name="amount" type="number" step="0.01" value={form.amount} onChange={handleChange} />
           {errors.amount ? <p className="mt-2 text-xs text-rose-600">{errors.amount}</p> : null}
         </label>
 
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-slate-700">
+          <span className="mb-2 block text-sm font-medium text-[var(--text-main)]">
             {kind === 'expense' ? 'Description' : 'Source'}
           </span>
           <input
@@ -125,7 +125,7 @@ export default function QuickEntryModal({ isOpen, onClose }) {
         </label>
 
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-slate-700">Date</span>
+          <span className="mb-2 block text-sm font-medium text-[var(--text-main)]">Date</span>
           <input className={inputClassName} name="date" type="date" value={form.date} onChange={handleChange} />
         </label>
       </div>

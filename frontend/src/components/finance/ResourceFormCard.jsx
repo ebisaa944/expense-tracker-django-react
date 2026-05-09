@@ -4,14 +4,14 @@ import Card from '../ui/Card';
 function Field({ children, label }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-medium text-slate-700">{label}</span>
+      <span className="mb-2 block text-sm font-medium text-[var(--text-main)]">{label}</span>
       {children}
     </label>
   );
 }
 
 const inputClassName =
-  'w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100';
+  'w-full rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-strong)] px-4 py-3 text-sm text-[var(--text-main)] outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100';
 
 export default function ResourceFormCard({
   fields,
@@ -26,27 +26,27 @@ export default function ResourceFormCard({
 }) {
   return (
     <Card className="h-fit">
-      <h2 className="text-xl font-semibold text-slate-950">{title}</h2>
-      <p className="mt-2 text-sm text-slate-500">{helper}</p>
+      <h2 className="text-xl font-semibold text-[var(--text-main)]">{title}</h2>
+      <p className="mt-2 text-sm text-[var(--text-muted)]">{helper}</p>
       <form onSubmit={onSubmit} className="mt-6 space-y-4">
         {fields.map((field) => {
           if (field.type === 'checkbox') {
             return (
               <label
                 key={field.name}
-                className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700"
+                className="flex items-start gap-3 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text-main)]"
               >
                 <input
                   checked={Boolean(field.checked)}
-                  className="mt-1 h-4 w-4 rounded border-slate-300 text-amber-500 focus:ring-amber-400"
+                  className="mt-1 h-4 w-4 rounded border-[var(--border-strong)] text-amber-500 focus:ring-amber-400"
                   name={field.name}
                   onChange={field.onChange}
                   type="checkbox"
                 />
                 <span>
-                  <span className="block font-medium text-slate-900">{field.label}</span>
+                  <span className="block font-medium text-[var(--text-main)]">{field.label}</span>
                   {field.description ? (
-                    <span className="mt-1 block text-xs leading-5 text-slate-500">{field.description}</span>
+                    <span className="mt-1 block text-xs leading-5 text-[var(--text-muted)]">{field.description}</span>
                   ) : null}
                 </span>
               </label>

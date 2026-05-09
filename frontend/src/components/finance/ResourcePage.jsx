@@ -22,9 +22,9 @@ export default function ResourcePage({
               className="rounded-[24px] border p-5 shadow-[0_20px_50px_-34px_rgba(15,23,42,0.18)]"
               style={{ background: item.background || 'linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,250,252,0.92))', borderColor: 'var(--border-soft)' }}
             >
-              <p className="text-xs uppercase tracking-[0.28em] text-slate-400">{item.label}</p>
-              <p className="mt-3 text-2xl font-semibold text-slate-950">{item.value}</p>
-              <p className="mt-2 text-sm text-slate-500">{item.helpText}</p>
+              <p className="text-xs uppercase tracking-[0.28em] text-[var(--text-muted)]">{item.label}</p>
+              <p className="mt-3 text-2xl font-semibold text-[var(--text-main)]">{item.value}</p>
+              <p className="mt-2 text-sm text-[var(--text-muted)]">{item.helpText}</p>
             </div>
           ))}
         </div>

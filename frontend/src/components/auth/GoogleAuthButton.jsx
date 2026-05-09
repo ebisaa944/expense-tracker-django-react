@@ -5,7 +5,7 @@ export default function GoogleAuthButton({ disabled, onClick }) {
     <Button
       type="button"
       tone="secondary"
-      className="w-full bg-white"
+      className="w-full bg-[var(--surface-strong)]"
       onClick={onClick}
       disabled={disabled}
     >

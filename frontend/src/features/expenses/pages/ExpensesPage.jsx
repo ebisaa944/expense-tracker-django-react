@@ -53,12 +53,12 @@ function ExpenseCards({ rows, onDelete, onEdit }) {
         <Card key={row.id} className="space-y-4">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-rose-500">{row.category_name}</p>
-              <h3 className="mt-2 text-lg font-semibold text-slate-950">{row.description || 'Expense entry'}</h3>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--danger-500)]">{row.category_name}</p>
+              <h3 className="mt-2 text-lg font-semibold text-[var(--text-main)]">{row.description || 'Expense entry'}</h3>
             </div>
             <span className="text-lg font-bold text-rose-600">{formatCurrency(row.amount)}</span>
           </div>
-          <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--text-muted)]">
             <span>{formatDate(row.date)}</span>
             {row.is_recurring ? (
               <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-amber-800">
@@ -293,7 +293,7 @@ export default function ExpensesPage() {
                 {lastCategory ? (
                   <button
                     type="button"
-                    className="text-sm font-medium text-indigo-700 transition hover:text-indigo-800"
+                    className="text-sm font-medium text-[var(--primary-600)] transition hover:text-indigo-800"
                     onClick={() => setForm((current) => ({ ...current, category: lastCategory || current.category }))}
                   >
                     Use last category again
@@ -381,12 +381,12 @@ export default function ExpensesPage() {
           emptyTitle="No expenses recorded"
           emptyDescription="Once you add expenses, they’ll show up here with cleaner filtering, exports, and smarter recurring support."
           toolbar={
-            <Card className="rounded-[20px] border border-slate-100 bg-slate-50 p-4 shadow-none">
+            <Card className="rounded-[20px] border border-[var(--border-soft)] bg-[var(--surface)] p-4 shadow-none">
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                 <div className="relative">
-                  <Icon name="search" className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Icon name="search" className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
                   <input
-                    className="w-full rounded-2xl border border-slate-200 bg-white px-11 py-3 text-sm"
+                    className="w-full rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-strong)] px-11 py-3 text-sm"
                     name="q"
                     onChange={handleFilterChange}
                     placeholder="Search description or category"
@@ -394,7 +394,7 @@ export default function ExpensesPage() {
                   />
                 </div>
                 <select
-                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                  className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-strong)] px-4 py-3 text-sm"
                   name="category"
                   onChange={handleFilterChange}
                   value={filters.category}
@@ -407,21 +407,21 @@ export default function ExpensesPage() {
                   ))}
                 </select>
                 <input
-                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                  className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-strong)] px-4 py-3 text-sm"
                   name="date_from"
                   onChange={handleFilterChange}
                   type="date"
                   value={filters.date_from}
                 />
                 <input
-                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                  className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-strong)] px-4 py-3 text-sm"
                   name="date_to"
                   onChange={handleFilterChange}
                   type="date"
                   value={filters.date_to}
                 />
                 <input
-                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                  className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-strong)] px-4 py-3 text-sm"
                   name="min_amount"
                   onChange={handleFilterChange}
                   placeholder="Min amount"
@@ -430,7 +430,7 @@ export default function ExpensesPage() {
                   value={filters.min_amount}
                 />
                 <input
-                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                  className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-strong)] px-4 py-3 text-sm"
                   name="max_amount"
                   onChange={handleFilterChange}
                   placeholder="Max amount"
@@ -439,7 +439,7 @@ export default function ExpensesPage() {
                   value={filters.max_amount}
                 />
                 <select
-                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                  className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-strong)] px-4 py-3 text-sm"
                   name="recurring"
                   onChange={handleFilterChange}
                   value={filters.recurring}

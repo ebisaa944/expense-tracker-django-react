@@ -5,13 +5,13 @@ import { useSettings } from '../../../context/useSettings';
 import { currencyOptions } from '../../../lib/format';
 import { useNotifications } from '../../../context/useNotifications';
 
-const selectClassName = 'w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm';
+const selectClassName = 'w-full rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-strong)] px-4 py-3 text-sm';
 
 function Section({ title, description, children }) {
   return (
-    <Card>
-      <h3 className="text-lg font-semibold text-slate-950">{title}</h3>
-      <p className="mt-2 text-sm leading-6 text-slate-500">{description}</p>
+    <Card className="bg-[var(--surface-strong)] border-[var(--border-soft)] transition-colors duration-300">
+      <h3 className="text-lg font-semibold text-[var(--text-main)]">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{description}</p>
       <div className="mt-6 space-y-5">{children}</div>
     </Card>
   );
@@ -60,7 +60,7 @@ export default function SettingsPage() {
             title="Profile settings"
             description="Core profile fields are kept simple for now while the authenticated account structure stays stable."
           >
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
+            <div className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] px-4 py-4 text-sm text-[var(--text-muted)]">
               Profile editing is ready for a follow-up API if you want name, avatar, and password management next.
             </div>
           </Section>
@@ -70,9 +70,9 @@ export default function SettingsPage() {
             description="Choose how financial values are displayed across the entire product."
           >
             <label className="block">
-              <span className="mb-2 block text-sm font-medium text-slate-700">Display currency</span>
+              <span className="mb-2 block text-sm font-medium text-[var(--text-main)]">Display currency</span>
               <select
-                className={selectClassName}
+                className="w-full rounded-2xl border border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-main)] transition-colors px-4 py-3 text-sm"
                 value={settings.currency}
                 onChange={(event) => update({ currency: event.target.value })}
               >
@@ -90,20 +90,20 @@ export default function SettingsPage() {
             description="Control the overall look, font family, and readability scale used in the interface."
           >
             <label className="block">
-              <span className="mb-2 block text-sm font-medium text-slate-700">Theme mode</span>
+              <span className="mb-2 block text-sm font-medium text-[var(--text-main)]">Theme mode</span>
               <select
-                className={selectClassName}
+                className="w-full rounded-2xl border border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-main)] transition-colors px-4 py-3 text-sm"
                 value={settings.theme_mode}
                 onChange={(event) => update({ theme_mode: event.target.value })}
               >
-                <option value="light">Light</option>
-                <option value="dark">Dark (future-ready)</option>
+                <option value="light">Light Mode</option>
+                <option value="dark">Dark Mode</option>
               </select>
             </label>
             <label className="block">
-              <span className="mb-2 block text-sm font-medium text-slate-700">Font family</span>
+              <span className="mb-2 block text-sm font-medium text-[var(--text-main)]">Font family</span>
               <select
-                className={selectClassName}
+                className="w-full rounded-2xl border border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-main)] transition-colors px-4 py-3 text-sm"
                 value={settings.font_family}
                 onChange={(event) => update({ font_family: event.target.value })}
               >
@@ -112,9 +112,9 @@ export default function SettingsPage() {
               </select>
             </label>
             <label className="block">
-              <span className="mb-2 block text-sm font-medium text-slate-700">Font size</span>
+              <span className="mb-2 block text-sm font-medium text-[var(--text-main)]">Font size</span>
               <select
-                className={selectClassName}
+                className="w-full rounded-2xl border border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-main)] transition-colors px-4 py-3 text-sm"
                 value={settings.font_size}
                 onChange={(event) => update({ font_size: event.target.value })}
               >
@@ -123,16 +123,16 @@ export default function SettingsPage() {
                 <option value="large">Large</option>
               </select>
             </label>
-            <label className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+            <label className="flex items-start gap-3 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] transition-all px-4 py-3 text-sm text-[var(--text-main)] hover:border-[var(--primary-500)]">
               <input
                 checked={settings.compact_tables}
-                className="mt-1 h-4 w-4 rounded border-slate-300"
+                className="mt-1 h-4 w-4 rounded border-[var(--border-strong)] bg-[var(--surface-strong)]"
                 type="checkbox"
                 onChange={(event) => update({ compact_tables: event.target.checked })}
               />
               <span>
-                <span className="block font-medium text-slate-900">Compact transaction tables</span>
-                <span className="mt-1 block text-xs text-slate-500">
+                <span className="block font-medium text-[var(--text-main)]">Compact transaction tables</span>
+                <span className="mt-1 block text-xs text-[var(--text-muted)]">
                   Useful when reviewing many ledger rows on desktop.
                 </span>
               </span>
@@ -147,7 +147,7 @@ export default function SettingsPage() {
           description="Control the default time horizon, widget visibility, and chart style used on the dashboard."
         >
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-slate-700">Default view</span>
+            <span className="mb-2 block text-sm font-medium text-[var(--text-main)]">Default view</span>
             <select
               className={selectClassName}
               value={settings.dashboard_default_view}
@@ -159,7 +159,7 @@ export default function SettingsPage() {
             </select>
           </label>
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-slate-700">Default chart type</span>
+            <span className="mb-2 block text-sm font-medium text-[var(--text-main)]">Default chart type</span>
             <select
               className={selectClassName}
               value={settings.dashboard_chart_type}
@@ -175,10 +175,10 @@ export default function SettingsPage() {
             ['dashboard_show_budget_summary', 'Show budget summary widget'],
             ['dashboard_show_top_categories', 'Show top categories widget'],
           ].map(([key, label]) => (
-            <label key={key} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+            <label key={key} className="flex items-center gap-3 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text-main)]">
               <input
                 checked={settings[key]}
-                className="h-4 w-4 rounded border-slate-300"
+                className="h-4 w-4 rounded border-[var(--border-strong)]"
                 type="checkbox"
                 onChange={(event) => update({ [key]: event.target.checked })}
               />
@@ -196,10 +196,10 @@ export default function SettingsPage() {
             ['notifications_goal_reminders', 'Goal reminders'],
             ['notifications_low_balance', 'Low balance warnings'],
           ].map(([key, label]) => (
-            <label key={key} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+            <label key={key} className="flex items-center gap-3 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text-main)]">
               <input
                 checked={settings[key]}
-                className="h-4 w-4 rounded border-slate-300"
+                className="h-4 w-4 rounded border-[var(--border-strong)]"
                 type="checkbox"
                 onChange={(event) => update({ [key]: event.target.checked })}
               />
@@ -207,9 +207,9 @@ export default function SettingsPage() {
             </label>
           ))}
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-slate-700">Budget threshold</span>
+            <span className="mb-2 block text-sm font-medium text-[var(--text-main)]">Budget threshold</span>
             <input
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+              className="w-full rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-strong)] px-4 py-3 text-sm"
               min="1"
               max="100"
               type="number"

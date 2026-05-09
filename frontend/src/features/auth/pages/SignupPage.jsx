@@ -82,12 +82,12 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(79,70,229,0.16),_transparent_22%),radial-gradient(circle_at_bottom_right,_rgba(5,150,105,0.12),_transparent_26%),linear-gradient(160deg,_#eef4fb_0%,_#f8fafc_58%,_#e2e8f0_100%)] px-4 py-10">
       <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-6xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-[36px] border border-white/70 bg-slate-950 p-8 text-white shadow-[0_40px_120px_-50px_rgba(15,23,42,0.8)] md:p-12">
+        <div className="rounded-[36px] border border-white/70 bg-[var(--text-main)] p-8 text-white shadow-[0_40px_120px_-50px_rgba(15,23,42,0.8)] md:p-12">
           <p className="text-xs font-semibold uppercase tracking-[0.4em] text-indigo-200">Finance OS</p>
           <h1 className="mt-5 max-w-xl text-4xl font-semibold tracking-tight md:text-6xl">
             Build a personal finance workspace that adapts to you.
           </h1>
-          <p className="mt-6 max-w-xl text-base leading-7 text-slate-300">
+          <p className="mt-6 max-w-xl text-base leading-7 text-[var(--text-muted)]">
             Create an account to unlock personalized currency, dashboard preferences, notifications, and finance views that follow your habits.
           </p>
         </div>
@@ -108,14 +108,14 @@ export default function SignupPage() {
                   style={{ width: `${Math.max(strength, 1) * 25}%` }}
                 />
               </div>
-              <p className="text-xs text-slate-500">Password strength: {strength >= 3 ? 'Strong' : strength === 2 ? 'Medium' : 'Weak'}</p>
+              <p className="text-xs text-[var(--text-muted)]">Password strength: {strength >= 3 ? 'Strong' : strength === 2 ? 'Medium' : 'Weak'}</p>
             </div>
             <AuthInput label="Confirm password" name="confirm_password" type="password" value={form.confirm_password} onChange={handleChange} error={errors.confirm_password} icon="settings" />
             <AuthButton type="submit" loading={loading}>Create account</AuthButton>
             <GoogleAuthButton onClick={() => notify({ tone: 'info', title: 'Google OAuth ready', message: 'Provider credentials and callback wiring can be added next without changing this UI.' })} />
           </form>
-          <p className="mt-6 text-sm text-slate-500">
-            Already have an account? <Link to="/login" className="font-semibold text-indigo-600">Sign in</Link>
+          <p className="mt-6 text-sm text-[var(--text-muted)]">
+            Already have an account? <Link to="/login" className="font-semibold text-[var(--primary-600)]">Sign in</Link>
           </p>
         </AuthCard>
       </div>

@@ -19,7 +19,7 @@ function DonutChart({ items }) {
 
   if (total === 0) {
     return (
-      <div className="flex h-48 items-center justify-center rounded-[24px] border border-dashed border-slate-200 text-sm text-slate-400">
+      <div className="flex h-48 items-center justify-center rounded-[24px] border border-dashed border-[var(--border-soft)] text-sm text-[var(--text-muted)]">
         No spending data this month.
       </div>
     );
@@ -69,9 +69,9 @@ function DonutChart({ items }) {
             <div key={item.category} className="flex items-center justify-between gap-4 text-sm">
               <div className="flex items-center gap-3">
                 <span className="h-3 w-3 rounded-full" style={{ backgroundColor: colors[index % colors.length] }} />
-                <span className="font-medium text-slate-700">{item.category}</span>
+                <span className="font-medium text-[var(--text-main)]">{item.category}</span>
               </div>
-              <span className="text-slate-500">
+              <span className="text-[var(--text-muted)]">
                 {formatCurrency(item.amount)} · {share}%
               </span>
             </div>
@@ -113,7 +113,7 @@ function TrendChart({ points }) {
         <path d={buildPath('expenses')} fill="none" stroke="#dc2626" strokeWidth="2.4" />
         <path d={buildPath('incomes')} fill="none" stroke="#059669" strokeWidth="2.4" />
       </svg>
-      <div className="flex flex-wrap items-center justify-between gap-3 text-xs uppercase tracking-[0.2em] text-slate-400">
+      <div className="flex flex-wrap items-center justify-between gap-3 text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
         <span>{formatDate(points[0]?.date)}</span>
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-2">
@@ -239,7 +239,7 @@ export default function DashboardPage() {
   const showTopCategories = settings.dashboard_show_top_categories;
 
   return (
-    <div className="space-y-8 rounded-[32px] p-1" style={{ background: 'var(--page-dashboard)' }}>
+    <div className="space-y-8 rounded-[32px] p-1 bg-[var(--page-dashboard)] transition-colors duration-500">
       <PageHeader
         eyebrow="Overview"
         title="A clearer command center for your money"
@@ -262,30 +262,30 @@ export default function DashboardPage() {
         }
       />
 
-      <div className="grid gap-4 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <Card key={stat.label} className="bg-gradient-to-br from-white via-white to-indigo-50/70">
+      <div className="grid gap-4 lg:grid-cols-4 group">
+        {stats.map((stat, i) => (
+          <Card key={stat.label} className="bg-[var(--surface-strong)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-hover)] hover:border-[var(--primary-500)]" style={{ animationDelay: `${i * 100}ms` }}>
             <div className="flex items-center justify-between gap-4">
-              <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{stat.label}</p>
-              <span className="rounded-full bg-indigo-50 p-2 text-indigo-600">
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-muted)]">{stat.label}</p>
+              <span className="rounded-full bg-[var(--primary-50)] p-2 text-[var(--primary-600)] transition-colors">
                 <Icon name={stat.icon} className="h-4 w-4" />
               </span>
             </div>
-            <p className="mt-4 text-3xl font-semibold tracking-tight text-slate-950">{stat.value}</p>
-            <p className="mt-3 text-sm leading-6 text-slate-500">{stat.detail}</p>
+            <p className="mt-4 text-3xl font-semibold tracking-tight text-[var(--text-main)]">{stat.value}</p>
+            <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{stat.detail}</p>
           </Card>
         ))}
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_1fr]">
         {showTopCategories ? (
-        <Card>
-          <p className="text-xs uppercase tracking-[0.3em] text-indigo-600">Category breakdown</p>
+        <Card className="hover:shadow-[var(--shadow-hover)] transition-shadow duration-300 border-[var(--border-soft)]">
+          <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary-600)]">Category breakdown</p>
           <div className="mt-3 flex items-center justify-between gap-4">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-950">Where this month’s spending went</h2>
-            <div className="text-right text-sm text-slate-500">
+            <h2 className="text-2xl font-semibold tracking-tight text-[var(--text-main)]">Where this month’s spending went</h2>
+            <div className="text-right text-sm text-[var(--text-muted)]">
               <p>Top category</p>
-              <p className="font-semibold text-slate-900">{summary.top_spending_category?.category || 'No data yet'}</p>
+              <p className="font-semibold text-[var(--text-main)]">{summary.top_spending_category?.category || 'No data yet'}</p>
             </div>
           </div>
           <div className="mt-6">
@@ -295,9 +295,9 @@ export default function DashboardPage() {
         ) : null}
 
         {showChart ? (
-        <Card>
-          <p className="text-xs uppercase tracking-[0.3em] text-indigo-600">14 day trend</p>
-          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">
+        <Card className="hover:shadow-[var(--shadow-hover)] transition-shadow duration-300 border-[var(--border-soft)]">
+          <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary-600)]">14 day trend</p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--text-main)]">
             {settings.dashboard_chart_type === 'pie' ? 'Daily mix of income and spending' : 'Daily income vs spending'}
           </h2>
           <div className="mt-6">
@@ -309,26 +309,26 @@ export default function DashboardPage() {
 
       <div className="grid gap-6 xl:grid-cols-[1.05fr_1.45fr]">
         {showBudgetSummary ? (
-        <Card className="bg-gradient-to-br from-slate-950 to-indigo-950 text-white">
-          <p className="text-xs uppercase tracking-[0.3em] text-indigo-200">Budget alerts</p>
-          <h2 className="mt-3 text-2xl font-semibold tracking-tight">Where spending needs attention</h2>
+        <Card className="bg-[var(--surface-strong)] shadow-[var(--shadow-glow)] border-[var(--border-strong)] transition-all">
+          <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary-600)]">Budget alerts</p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--text-main)]">Where spending needs attention</h2>
           <div className="mt-6 space-y-4">
             {summary.budget_alerts.length === 0 ? (
-              <div className="rounded-[24px] border border-white/10 bg-white/5 p-5 text-sm text-slate-300">
+              <div className="rounded-[24px] border border-[var(--border-soft)] bg-[var(--surface)] p-5 text-sm text-[var(--text-muted)]">
                 No active budget is over or near its limit right now.
               </div>
             ) : (
               summary.budget_alerts.map((alert) => (
-                <div key={alert.id} className="rounded-[24px] border border-rose-300/30 bg-white/7 p-5">
+                <div key={alert.id} className="rounded-[24px] border border-rose-300/30 bg-[var(--surface-strong)]/7 p-5">
                   <div className="flex items-center justify-between gap-4">
                     <p className="text-base font-semibold text-white">{alert.category}</p>
-                    <span className="rounded-full bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-amber-200">
+                    <span className="rounded-full bg-[var(--surface-strong)]/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-[var(--warning-500)]">
                       {alert.warning || 'Over limit'}
                     </span>
                   </div>
-                  <p className="mt-3 text-sm text-slate-300">
+                  <div className="mt-3 text-sm text-[var(--text-muted)]">
                     Spent {formatCurrency(alert.spent)} against a budget of {formatCurrency(alert.limit)}.
-                  </p>
+                  </div>
                 </div>
               ))
             )}
@@ -336,28 +336,28 @@ export default function DashboardPage() {
         </Card>
         ) : null}
 
-        <Card>
-          <p className="text-xs uppercase tracking-[0.3em] text-indigo-600">Smart insights</p>
-          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">Signals worth acting on</h2>
+        <Card className="hover:shadow-[var(--shadow-hover)] transition-shadow duration-300">
+          <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary-600)]">Smart insights</p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--text-main)]">Signals worth acting on</h2>
           <div className="mt-6 space-y-4">
             {summary.insights.map((insight) => (
-              <div key={insight} className="rounded-[24px] border border-slate-100 bg-slate-50 p-5 text-sm leading-6 text-slate-600">
+              <div key={insight} className="rounded-[24px] border border-[var(--border-soft)] bg-[var(--surface-strong)] p-5 text-sm leading-6 text-[var(--text-muted)] shadow-sm">
                 {insight}
               </div>
             ))}
             {summary.budget_statuses.slice(0, 3).map((budget) => (
-              <div key={budget.id} className="rounded-[24px] border border-slate-100 bg-white p-5">
+              <div key={budget.id} className="rounded-[24px] border border-[var(--border-soft)] bg-[var(--surface-strong)] p-5 shadow-sm">
                 <div className="flex items-center justify-between gap-4">
-                  <p className="font-semibold text-slate-950">{budget.category}</p>
-                  <span className="text-sm text-slate-500">{budget.percent_used}% used</span>
+                  <p className="font-semibold text-[var(--text-main)]">{budget.category}</p>
+                  <span className="text-sm text-[var(--text-muted)]">{budget.percent_used}% used</span>
                 </div>
-                <div className="mt-3 h-3 rounded-full bg-slate-100">
+                <div className="mt-3 h-3 rounded-full bg-[var(--surface)] overflow-hidden">
                   <div
-                    className={`h-3 rounded-full ${budget.status === 'over_limit' ? 'bg-rose-500' : budget.status === 'near_limit' ? 'bg-amber-400' : 'bg-emerald-500'}`}
+                    className={`h-3 rounded-full transition-all duration-1000 ${budget.status === 'over_limit' ? 'bg-[var(--danger-500)]' : budget.status === 'near_limit' ? 'bg-[var(--warning-500)]' : 'bg-[var(--success-500)]'}`}
                     style={{ width: `${Math.min(budget.percent_used, 100)}%` }}
                   />
                 </div>
-                <div className="mt-3 flex justify-between text-sm text-slate-500">
+                <div className="mt-3 flex justify-between text-sm text-[var(--text-muted)]">
                   <span>{formatCurrency(budget.spent)}</span>
                   <span>{formatCurrency(budget.limit)}</span>
                 </div>
@@ -367,9 +367,9 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <Card>
-        <p className="text-xs uppercase tracking-[0.3em] text-indigo-600">Savings goals</p>
-        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">Progress in motion</h2>
+      <Card className="hover:shadow-[var(--shadow-hover)] transition-shadow duration-300">
+        <p className="text-xs uppercase tracking-[0.3em] text-[var(--primary-600)]">Savings goals</p>
+        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--text-main)]">Progress in motion</h2>
         <div className="mt-6 space-y-4">
           {summary.goals.length === 0 ? (
             <EmptyState
@@ -387,18 +387,18 @@ export default function DashboardPage() {
               const progress = clampPercentage((Number(goal.current_amount) / Number(goal.target_amount || 1)) * 100);
 
               return (
-                <div key={goal.id} className="rounded-[24px] border border-slate-100 bg-slate-50 p-5">
+                <div key={goal.id} className="group rounded-[24px] border border-[var(--border-soft)] bg-[var(--surface-strong)] p-5 transition-colors hover:border-[var(--primary-500)]">
                   <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
                     <div>
-                      <p className="text-base font-semibold text-slate-950">{goal.name}</p>
-                      <p className="text-sm text-slate-500">Deadline {formatDate(goal.deadline)}</p>
+                      <p className="text-base font-semibold text-[var(--text-main)]">{goal.name}</p>
+                      <p className="text-sm text-[var(--text-muted)]">Deadline {formatDate(goal.deadline)}</p>
                     </div>
-                    <p className="text-sm font-medium text-slate-600">{progress.toFixed(0)}% complete</p>
+                    <p className="text-sm font-medium text-[var(--primary-600)]">{progress.toFixed(0)}% complete</p>
                   </div>
-                  <div className="mt-4 h-3 rounded-full bg-white">
-                    <div className="h-3 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500" style={{ width: `${progress}%` }} />
+                  <div className="mt-4 h-3 rounded-full bg-[var(--surface)] overflow-hidden">
+                    <div className="h-3 rounded-full bg-[var(--primary-500)] transition-all duration-1000 shadow-[var(--shadow-glow)]" style={{ width: `${progress}%` }} />
                   </div>
-                  <div className="mt-3 flex justify-between text-sm text-slate-500">
+                  <div className="mt-3 flex justify-between text-sm text-[var(--text-muted)]">
                     <span>{formatCurrency(goal.current_amount)}</span>
                     <span>{formatCurrency(goal.target_amount)}</span>
                   </div>

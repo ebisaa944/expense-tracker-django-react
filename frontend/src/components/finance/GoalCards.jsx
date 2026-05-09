@@ -29,8 +29,8 @@ export default function GoalCards({ goals, onDelete, onEdit }) {
           <Card key={goal.id}>
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-lg font-semibold text-slate-950">{goal.name}</h3>
-                <p className="mt-1 text-sm text-slate-500">Target date: {formatDate(goal.deadline)}</p>
+                <h3 className="text-lg font-semibold text-[var(--text-main)]">{goal.name}</h3>
+                <p className="mt-1 text-sm text-[var(--text-muted)]">Target date: {formatDate(goal.deadline)}</p>
               </div>
               <div className="flex gap-2">
                 <Button tone="secondary" onClick={() => onEdit?.(goal)}>
@@ -41,7 +41,7 @@ export default function GoalCards({ goals, onDelete, onEdit }) {
                 </Button>
               </div>
             </div>
-            <div className="mt-6 flex items-center justify-between text-sm text-slate-500">
+            <div className="mt-6 flex items-center justify-between text-sm text-[var(--text-muted)]">
               <span>{formatCurrency(goal.current_amount)} saved</span>
               <span>{formatCurrency(goal.target_amount)} target</span>
             </div>
@@ -52,7 +52,7 @@ export default function GoalCards({ goals, onDelete, onEdit }) {
               />
             </div>
             <div className="mt-3 flex items-center justify-between gap-3">
-              <p className="text-sm font-medium text-slate-700">{progress.toFixed(0)}% complete</p>
+              <p className="text-sm font-medium text-[var(--text-main)]">{progress.toFixed(0)}% complete</p>
               <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${status === 'On track' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
                 {status}
               </span>

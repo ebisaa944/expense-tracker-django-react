@@ -243,8 +243,8 @@ export default function BudgetsPage() {
               label: 'Limit',
               render: (row) => (
                 <div>
-                  <p className="font-semibold text-slate-950">{formatCurrency(row.limit_amount)}</p>
-                  <p className="text-xs text-slate-500">Spent {formatCurrency(row.spent)}</p>
+                  <p className="font-semibold text-[var(--text-main)]">{formatCurrency(row.limit_amount)}</p>
+                  <p className="text-xs text-[var(--text-muted)]">Spent {formatCurrency(row.spent)}</p>
                 </div>
               ),
             },
@@ -263,7 +263,7 @@ export default function BudgetsPage() {
               label: 'Progress',
               render: (row) => (
                 <div className="min-w-[180px]">
-                  <div className="flex items-center justify-between text-xs text-slate-500">
+                  <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
                     <span>{Math.round(row.percent)}% used</span>
                     <span>{formatCurrency(row.remaining)} left</span>
                   </div>

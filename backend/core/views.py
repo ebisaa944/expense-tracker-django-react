@@ -32,7 +32,7 @@ class DashboardSummaryView(APIView):
         previous_incomes = Income.objects.filter(user=user, date__range=[previous_month_start, previous_month_end]).aggregate(total=Sum('amount'))['total'] or 0
 
         # budget alerts (active budgets where spending > limit)
-        active_budgets = Budget.objects.filter(user=user, start_date__lte=today, end_date__gte=today)
+        active_budgets = Budget.objects.filter(user=user, start_date__lte=today, end_date__gte=today).select_related('category')
         budget_alerts = []
         budget_statuses = []
         for budget in active_budgets:

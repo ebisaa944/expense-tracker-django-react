@@ -23,7 +23,7 @@ export default function ToastTray() {
           className={`pointer-events-auto rounded-[24px] border px-4 py-4 shadow-[0_20px_40px_-24px_rgba(15,23,42,0.45)] ${tones[notification.tone]}`}
         >
           <div className="flex items-start gap-3">
-            <span className="mt-0.5 rounded-full bg-white/80 p-2">
+            <span className="mt-0.5 rounded-full bg-[var(--surface-strong)]/80 p-2">
               <Icon name="bell" className="h-4 w-4" />
             </span>
             <div className="min-w-0 flex-1">

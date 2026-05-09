@@ -12,7 +12,7 @@ export function PageSkeleton() {
       </div>
       <div className="grid gap-4 lg:grid-cols-3">
         {[0, 1, 2].map((item) => (
-          <div key={item} className="rounded-[28px] border border-white/70 bg-white/80 p-6 shadow-sm">
+          <div key={item} className="rounded-[28px] border border-white/70 bg-[var(--surface-strong)]/80 p-6 shadow-sm">
             <SkeletonBlock className="h-3 w-24" />
             <SkeletonBlock className="mt-5 h-8 w-32" />
             <SkeletonBlock className="mt-4 h-4 w-full" />
