@@ -14,6 +14,7 @@ import { downloadCsv } from '../../../lib/export';
 import { validateTransactionForm } from '../../../lib/validation';
 import { useNotifications } from '../../../context/useNotifications';
 import { categoriesService, expensesService, generateRecurringEntries } from '../../../services/finance';
+import { useQuery } from '@tanstack/react-query';
 
 const initialFilters = {
   q: '',
@@ -83,8 +84,6 @@ function ExpenseCards({ rows, onDelete, onEdit }) {
 export default function ExpensesPage() {
   const categories = useResource(categoriesService.list, []);
   const { notify } = useNotifications();
-  const [expenses, setExpenses] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [viewMode, setViewMode] = useState('table');
@@ -93,25 +92,15 @@ export default function ExpensesPage() {
   const [lastCategory, setLastCategory] = useState(localStorage.getItem('expense:lastCategory') || '');
   const [form, setForm] = useState(() => createForm(localStorage.getItem('expense:lastCategory') || ''));
 
+  const { data: expensesRes, isLoading: loading, refetch } = useQuery({
+    queryKey: ['expenses', filters],
+    queryFn: () => expensesService.list(filters),
+    keepPreviousData: true,
+  });
+
+  const expenses = expensesRes?.data || [];
   const expenseCategories = categories.data.filter((category) => category.type === 'expense');
   const totalExpenses = expenses.reduce((total, item) => total + Number(item.amount), 0);
-
-  const loadExpenses = async (activeFilters = filters, showLoader = true) => {
-    try {
-      if (showLoader) {
-        setLoading(true);
-      }
-      const response = await expensesService.list(activeFilters);
-      setExpenses(response.data);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadExpenses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters]);
 
   const filteredInsights = useMemo(
     () => [
@@ -192,7 +181,7 @@ export default function ExpensesPage() {
     setEditingId(null);
     setErrors({});
     setForm(mode === 'continue' ? createForm(payload.category) : createForm(payload.category));
-    await loadExpenses(filters, false);
+    await refetch();
   };
 
   const handleSubmit = async (event) => {
@@ -208,7 +197,7 @@ export default function ExpensesPage() {
     await expensesService.remove(deleteId);
     setDeleteId(null);
     notify({ tone: 'success', title: 'Expense deleted', message: 'The selected transaction was removed.' });
-    await loadExpenses(filters, false);
+    await refetch();
   };
 
   const handleGenerateRecurring = async () => {
@@ -223,7 +212,7 @@ export default function ExpensesPage() {
       title: created > 0 ? 'Recurring expenses generated' : 'No recurring expenses due',
       message: created > 0 ? `${created} due expense entries were added automatically.` : 'Your recurring expense list is already up to date.',
     });
-    await loadExpenses(filters, false);
+    await refetch();
   };
 
   const startEdit = (row) => {

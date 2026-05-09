@@ -13,7 +13,8 @@ import { useResource } from '../../../hooks/useResource';
 import { downloadCsv } from '../../../lib/export';
 import { validateTransactionForm } from '../../../lib/validation';
 import { useNotifications } from '../../../context/useNotifications';
-import { categoriesService, generateRecurringEntries, incomesService } from '../../../services/finance';
+import { categoriesService, incomesService, generateRecurringEntries } from '../../../services/finance';
+import { useQuery } from '@tanstack/react-query';
 
 const initialFilters = {
   q: '',
@@ -83,8 +84,6 @@ function IncomeCards({ rows, onDelete, onEdit }) {
 export default function IncomesPage() {
   const categories = useResource(categoriesService.list, []);
   const { notify } = useNotifications();
-  const [incomes, setIncomes] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [viewMode, setViewMode] = useState('table');
@@ -93,25 +92,15 @@ export default function IncomesPage() {
   const [lastCategory, setLastCategory] = useState(localStorage.getItem('income:lastCategory') || '');
   const [form, setForm] = useState(() => createForm(localStorage.getItem('income:lastCategory') || ''));
 
+  const { data: incomesRes, isLoading: loading, refetch } = useQuery({
+    queryKey: ['incomes', filters],
+    queryFn: () => incomesService.list(filters),
+    keepPreviousData: true,
+  });
+
+  const incomes = incomesRes?.data || [];
   const incomeCategories = categories.data.filter((category) => category.type === 'income');
   const totalIncome = incomes.reduce((total, item) => total + Number(item.amount), 0);
-
-  const loadIncomes = async (activeFilters = filters, showLoader = true) => {
-    try {
-      if (showLoader) {
-        setLoading(true);
-      }
-      const response = await incomesService.list(activeFilters);
-      setIncomes(response.data);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadIncomes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters]);
 
   const highlights = useMemo(
     () => [
@@ -160,7 +149,7 @@ export default function IncomesPage() {
     setForm(createForm(lastCategory));
   };
 
-  const saveIncome = async () => {
+  const saveIncome = async (mode = 'save') => {
     const validationErrors = validateTransactionForm(form, 'source');
     setErrors(validationErrors);
 
@@ -192,7 +181,7 @@ export default function IncomesPage() {
     setEditingId(null);
     setErrors({});
     setForm(createForm(payload.category));
-    await loadIncomes(filters, false);
+    await refetch();
   };
 
   const handleSubmit = async (event) => {
@@ -201,14 +190,14 @@ export default function IncomesPage() {
   };
 
   const handleQuickAdd = async () => {
-    await saveIncome();
+    await saveIncome('continue');
   };
 
   const handleDelete = async () => {
     await incomesService.remove(deleteId);
     setDeleteId(null);
     notify({ tone: 'success', title: 'Income deleted', message: 'The selected transaction was removed.' });
-    await loadIncomes(filters, false);
+    await refetch();
   };
 
   const handleGenerateRecurring = async () => {
@@ -220,10 +209,10 @@ export default function IncomesPage() {
 
     notify({
       tone: created > 0 ? 'success' : 'info',
-      title: created > 0 ? 'Recurring incomes generated' : 'No recurring incomes due',
+      title: created > 0 ? 'Recurring records generated' : 'No recurring records due',
       message: created > 0 ? `${created} due income entries were added automatically.` : 'Your recurring income list is already up to date.',
     });
-    await loadIncomes(filters, false);
+    await refetch();
   };
 
   const startEdit = (row) => {

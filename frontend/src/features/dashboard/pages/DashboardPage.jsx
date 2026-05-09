@@ -12,6 +12,7 @@ import { getDashboardSummary } from '../../../services/dashboard';
 import { exportExpensesCSV } from '../../../services/reports';
 import { useNotifications } from '../../../context/useNotifications';
 import { useSettings } from '../../../context/useSettings';
+import { useQuery } from '@tanstack/react-query';
 
 function DonutChart({ items }) {
   const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
@@ -135,54 +136,42 @@ export default function DashboardPage() {
   const { notify } = useNotifications();
   const { settings } = useSettings();
   const navigate = useNavigate();
-  const [summary, setSummary] = useState({
-    total_expenses: 0,
-    total_incomes: 0,
-    expense_change_percent: 0,
-    income_change_percent: 0,
-    savings_rate: 0,
-    budget_alerts: [],
-    budget_statuses: [],
-    goals: [],
-    category_breakdown: [],
-    top_spending_category: null,
-    trend: [],
-    insights: [],
-  });
-  const [loading, setLoading] = useState(true);
+  const { data: summary, isLoading: loading, isError } = useQuery({
+    queryKey: ['dashboardSummary'],
+    queryFn: async () => {
+      const response = await getDashboardSummary();
+      const payload = response.data;
 
-  useEffect(() => {
-    getDashboardSummary()
-      .then((response) => {
-        setSummary(response.data);
+      if (payload.budget_alerts && payload.budget_alerts.length > 0) {
+        notify({
+          tone: 'warning',
+          title: 'Budget attention needed',
+          message: `${payload.budget_alerts.length} budget areas need review.`,
+        });
+      }
 
-        if (response.data.budget_alerts.length > 0) {
-          notify({
-            tone: 'warning',
-            title: 'Budget attention needed',
-            message: `${response.data.budget_alerts.length} budget areas need review.`,
-          });
-        }
-
-        const balance = Number(response.data.total_incomes) - Number(response.data.total_expenses);
-        if (balance < 0) {
-          notify({
-            tone: 'danger',
-            title: 'Low balance warning',
-            message: 'Expenses are currently ahead of income this month.',
-          });
-        }
-      })
-      .catch(() => {
+      const balance = Number(payload.total_incomes || 0) - Number(payload.total_expenses || 0);
+      if (balance < 0) {
         notify({
           tone: 'danger',
-          title: 'Dashboard unavailable',
-          message: 'We could not load your latest summary right now.',
+          title: 'Low balance warning',
+          message: 'Expenses are currently ahead of income this month.',
         });
-      })
-      .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      }
+
+      return payload;
+    },
+  });
+
+  useEffect(() => {
+    if (isError) {
+      notify({
+        tone: 'danger',
+        title: 'Dashboard unavailable',
+        message: 'We could not load your latest summary right now.',
+      });
+    }
+  }, [isError, notify]);
 
   const handleExportCSV = async () => {
     try {
@@ -199,9 +188,10 @@ export default function DashboardPage() {
     }
   };
 
-  const balance = Number(summary.total_incomes) - Number(summary.total_expenses);
-  const stats = useMemo(
-    () => [
+  const balance = Number(summary?.total_incomes || 0) - Number(summary?.total_expenses || 0);
+  const stats = useMemo(() => {
+    if (!summary) return [];
+    return [
       {
         label: 'Income this month',
         value: formatCurrency(summary.total_incomes),
@@ -222,13 +212,12 @@ export default function DashboardPage() {
       },
       {
         label: 'Savings rate',
-        value: `${summary.savings_rate.toFixed(1)}%`,
+        value: `${(summary.savings_rate || 0).toFixed(1)}%`,
         detail: 'Share of this month’s income still available after expenses.',
         icon: 'goal',
       },
-    ],
-    [balance, summary]
-  );
+    ];
+  }, [balance, summary]);
 
   if (loading) {
     return <PageSkeleton />;
