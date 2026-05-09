@@ -9,6 +9,7 @@ import Icon from '../../../components/ui/Icon';
 import { clampPercentage, formatCurrency, formatDate } from '../../../lib/format';
 import { openMonthlyReportPdf } from '../../../lib/report';
 import { getDashboardSummary } from '../../../services/dashboard';
+import { exportExpensesCSV } from '../../../services/reports';
 import { useNotifications } from '../../../context/useNotifications';
 import { useSettings } from '../../../context/useSettings';
 
@@ -183,6 +184,21 @@ export default function DashboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleExportCSV = async () => {
+    try {
+      const response = await exportExpensesCSV();
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `expenses_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch {
+      notify({ tone: 'danger', title: 'Export failed', message: 'Could not export expenses.' });
+    }
+  };
+
   const balance = Number(summary.total_incomes) - Number(summary.total_expenses);
   const stats = useMemo(
     () => [
@@ -235,6 +251,9 @@ export default function DashboardPage() {
             </Button>
             <Button icon="plus" tone="success" onClick={() => navigate('/incomes')}>
               Add income
+            </Button>
+            <Button icon="download" tone="secondary" onClick={handleExportCSV}>
+              Export CSV
             </Button>
             <Button icon="download" tone="secondary" onClick={() => openMonthlyReportPdf({ currency: settings.currency, generatedAt: new Date().toISOString(), insights: summary.insights, summary })}>
               Export PDF

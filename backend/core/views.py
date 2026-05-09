@@ -88,17 +88,15 @@ class DashboardSummaryView(APIView):
 
         trend_start = today - timedelta(days=13)
         expense_trend_map = {
-            item['day']: float(item['total'] or 0)
+            item['date']: float(item['total'] or 0)
             for item in Expense.objects.filter(user=user, date__range=[trend_start, today])
-            .annotate(day=TruncDate('date'))
-            .values('day')
+            .values('date')
             .annotate(total=Sum('amount'))
         }
         income_trend_map = {
-            item['day']: float(item['total'] or 0)
+            item['date']: float(item['total'] or 0)
             for item in Income.objects.filter(user=user, date__range=[trend_start, today])
-            .annotate(day=TruncDate('date'))
-            .values('day')
+            .values('date')
             .annotate(total=Sum('amount'))
         }
 

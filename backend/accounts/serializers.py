@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
+from django.db.models import Q
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import UserSettings
@@ -26,7 +27,7 @@ class UserSettingsSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    full_name = serializers.CharField(source='full_name', read_only=True)
+    full_name = serializers.CharField(read_only=True)
     settings = serializers.SerializerMethodField()
 
     class Meta:
@@ -82,9 +83,15 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
     username = serializers.CharField(write_only=True, required=False)
-    email = serializers.EmailField(write_only=True, required=False)
+    email = serializers.CharField(write_only=True, required=False)
     password = serializers.CharField(write_only=True)
     remember_me = serializers.BooleanField(write_only=True, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # SimpleJWT forces the username field to be required in its __init__, so we have to unset it
+        self.fields[self.username_field].required = False
+        self.fields[self.username_field].allow_blank = True
 
     @classmethod
     def get_token(cls, user):
@@ -97,10 +104,11 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
         password = attrs.get('password')
 
         if email:
+            identifier = email.strip().lower()
             try:
-                user_obj = User.objects.get(email__iexact=email.strip().lower())
+                user_obj = User.objects.get(Q(email__iexact=identifier) | Q(username__iexact=identifier))
             except User.DoesNotExist as exc:
-                raise serializers.ValidationError('No account found for this email.') from exc
+                raise serializers.ValidationError('No account found for this email or username.') from exc
 
             credentials = {
                 self.username_field: user_obj.username,

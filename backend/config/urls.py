@@ -31,8 +31,8 @@ urlpatterns = [
     path('api/goals/', include('goals.urls')),
     # ... other imports
     path('api/dashboard/', include('core.urls')),
-    # reports app (if you create views later)
-    # path('api/reports/', include('reports.urls')),
+    # reports app
+    path('api/reports/', include('reports.urls')),
 ]
 
 if settings.DEBUG:

@@ -41,10 +41,10 @@ export default function LoginPage() {
     setErrors((current) => ({ ...current, [name]: '' }));
   };
 
-  const handleSubmit = async (event) => {
+    const handleSubmit = async (event) => {
     event.preventDefault();
     const validationErrors = {};
-    if (!form.email.trim()) validationErrors.email = 'Enter your email.';
+    if (!form.email.trim()) validationErrors.email = 'Enter your email or username.';
     if (!form.password) validationErrors.password = 'Enter your password.';
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
@@ -82,9 +82,9 @@ export default function LoginPage() {
         >
           <form onSubmit={handleSubmit} className="space-y-4">
             <AuthInput
-              label="Email"
+              label="Email or Username"
               name="email"
-              type="email"
+              type="text"
               value={form.email}
               onChange={handleChange}
               error={errors.email}
